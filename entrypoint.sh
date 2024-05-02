@@ -171,5 +171,11 @@ echo "[+] git diff-index:"
 git diff-index --quiet HEAD || git commit --message "$COMMIT_MESSAGE"
 
 echo "[+] Pushing git commit"
-# --set-upstream: sets de branch when pushing to a branch that does not exist
-git push "$GIT_CMD_REPOSITORY" --set-upstream "$TARGET_BRANCH"
+n=0
+until [ "$n" -ge 5 ]
+do
+	# --set-upstream: sets de branch when pushing to a branch that does not exist
+	git push "$GIT_CMD_REPOSITORY" --set-upstream "$TARGET_BRANCH" && break
+	n=$((n+1)) 
+	git pull --rebase
+done
